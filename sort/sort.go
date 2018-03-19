@@ -360,12 +360,12 @@ func merge(arr []int, l,mid,r int) int64 {
 }
 
 // 求slice中第k大元素(快排)
-func SelectionMaxOfNth(arr []int, k int) int {
-	if k<0 && k>len(arr) {
-		fmt.Println("wrong params")
-	}
-	return selectionMaxOfNth() 
-}
-func selectionMaxOfNth(arr []int, l,r,k int) int {
+// func SelectionMaxOfNth(arr []int, k int) int {
+// 	if k<0 && k>len(arr) {
+// 		fmt.Println("wrong params")
+// 	}
+// 	return selectionMaxOfNth() 
+// }
+// func selectionMaxOfNth(arr []int, l,r,k int) int {
 	
-}
+// }
