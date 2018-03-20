@@ -1,6 +1,6 @@
 
 // 泛型辅助
-package mybinarysearch
+package mysort
 
 // 参考sort源码实现go泛型
 type Sortable interface {
