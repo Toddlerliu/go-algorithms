@@ -13,5 +13,5 @@ type BinarySearchTree struct {
 }
 
 func (tree BinarySearchTree) Insert (value string) {
-	tree.Root.Insert(v)
+
 }

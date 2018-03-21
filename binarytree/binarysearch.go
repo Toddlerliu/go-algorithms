@@ -63,6 +63,62 @@ func FBinarySearch(arr []string, target string) (bool, int) {
 	return false, -1
 }
 
+// 二分查找变种：floor、ceil
+// 二分查找存在问题：重复值下无法确定返回的唯一索引值
+// floor：是查找元素在数组中第一个索引位置；若数组中无此元素，则是target的前一个索引位置。
+// ceil：是查找元素在数组中最后一个索引位置；若数组中无此元素，则是target的后一个索引位置。
+
+// 如果找到target, 返回第一个target的索引index
+// 如果没有找到target, 返回比target小的最大值相应的索引, 如果这个最大值有多个, 返回最大索引
+// 如果这个target比整个数组的最小元素值还要小, 则不存在这个target的floor值, 返回-1
+func Floor(arr []string, target string) (bool, int) {
+	if target < arr[0] {
+		return false, -1
+	}
+	l, r := -1, len(arr)-1
+	for l < r {
+		// 寻找比target小的最大索引
+		mid := l + (r-l+1)/2
+		if arr[mid] > target {
+			r = mid - 1
+		} else {
+			l = mid
+		}
+	}
+	if l == r {
+		// 如果该索引+1就是target本身, 该索引+1即为返回值
+		if l+1 < len(arr) && arr[l+1] == target {
+			return true, l + 1
+		}
+		return false, l
+	}
+	return false, -999
+}
+
+// 返回重复target最后一个索引，如无，返回target前元素的后一个索引
+func Ceil(arr []string, target string) (bool, int) {
+	if target > arr[len(arr)-1] { //比最大还要大
+		return false, -1
+	}
+	l, r := 0, len(arr)
+	for l < r {
+		mid := l + (r-l)/2
+		if arr[mid] <= target {
+			l = mid + 1
+		} else {
+			r = mid
+		}
+	}
+	if l == r {
+		// 如果该索引-1就是target本身, 该索引+1即为返回值
+		if r-1 >= 0 && arr[r-1] == target {
+			return true, r - 1
+		}
+		return false, r
+	}
+	return false, -999
+}
+
 // 			查找元素	插入元素	删除元素
 // 普通数组	  O(n)		 O(n)		 O(n)
 // 顺序数组  O(logn)	 O(n)		 O(n)
