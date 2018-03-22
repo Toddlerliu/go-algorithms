@@ -10,7 +10,7 @@ type Sortable interface {
 }
 
 // int型切片
-type intArr []int
+type IntArr []int
 
 func (arr IntArr) Len() int {
 	return len(arr)
@@ -25,7 +25,7 @@ func (arr IntArr) Swap(i int, j int) {
 }
 
 // folat类型切片
-type floatArr []float
+type floatArr []float32
 
 func (arr floatArr) Len() int {
 	return len(arr)

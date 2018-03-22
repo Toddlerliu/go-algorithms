@@ -1,9 +1,9 @@
 package myheap
 
 type MaxHeap struct {
-	data []int // 数组存储堆
-	count int // 当前堆容量
-	capacity int //初始化容量
+	data     []int // 数组存储堆
+	count    int   // 当前堆容量
+	capacity int   //初始化容量
 }
 
 // 构造函数, 构造一个空堆, 可容纳capacity个元素
@@ -26,9 +26,9 @@ func NewMaxHeapHeapify(arr []int) *MaxHeap {
 	heap.capacity = n
 	for i := 0; i < n; i++ {
 		heap.data[i+1] = arr[i]
-	} 
+	}
 	heap.count = n
-	for i := heap.count/2; i >= 1; i-- { // 从第一个非叶子节点开始，叶子节点都是最大堆	
+	for i := heap.count / 2; i >= 1; i-- { // 从第一个非叶子节点开始，叶子节点都是最大堆
 		heap.shiftDown(i)
 	}
 	return heap
@@ -48,15 +48,16 @@ func (h *MaxHeap) Insert(item int) {
 	if h.count+1 <= h.capacity {
 		h.data[h.count+1] = item
 		h.count++
-		h.shiftUp(h.count)	
+		h.shiftUp(h.count)
 	}
 }
+
 // 从最大堆中取出堆顶元素, 即堆中所存储的最大数据
 func (h *MaxHeap) ExtractMax() int {
 	var ret int
 	if h.count > 0 {
 		ret = h.data[1]
-		h.data[1],h.data[h.count] = h.data[h.count],h.data[1]
+		h.data[1], h.data[h.count] = h.data[h.count], h.data[1]
 		h.count--
 		h.shiftDown(1)
 	}
@@ -65,15 +66,16 @@ func (h *MaxHeap) ExtractMax() int {
 
 // 新插入数据与父节点比较
 func (h *MaxHeap) shiftUp(k int) {
-	for k >1 && h.data[k/2] < h.data[k] {
-		h.data[k],h.data[k/2] = h.data[k/2],h.data[k]
+	for k > 1 && h.data[k/2] < h.data[k] {
+		h.data[k], h.data[k/2] = h.data[k/2], h.data[k]
 		k /= 2
 	}
 }
+
 // 将最后一个元素放置顶端，然后向下排序(谁大跟谁换)
 func (h *MaxHeap) shiftDown(k int) {
 	for 2*k <= h.count { // k存在左子节点
-	    j := 2*k // 在此轮循环中,data[k]和data[j]交换位置
+		j := 2 * k // 在此轮循环中,data[k]和data[j]交换位置
 		if j+1 <= h.count && h.data[j+1] > h.data[j] {
 			j++
 		}
@@ -81,7 +83,7 @@ func (h *MaxHeap) shiftDown(k int) {
 		if h.data[k] > h.data[j] {
 			break
 		}
-		h.data[k],h.data[j] = h.data[j],h.data[k]
+		h.data[k], h.data[j] = h.data[j], h.data[k]
 		k = j
 	}
 }

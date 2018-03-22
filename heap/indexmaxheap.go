@@ -5,11 +5,11 @@ import (
 )
 
 type IndexMaxHeap struct {
-	data []int // 最大索引堆中的数据,类型可以变
-	indexes []int // 最大索引堆中的索引, indexes[x] = i 表示索引i在x的位置
-	reverse []int // 最大索引堆中的反向索引, reverse[i] = x 表示索引i在x的位置
-	count int // 当前堆容量
-	capacity int //初始化容量
+	data     []int // 最大索引堆中的数据,类型可以变
+	indexes  []int // 最大索引堆中的索引, indexes[x] = i 表示索引i在x的位置
+	reverse  []int // 最大索引堆中的反向索引, reverse[i] = x 表示索引i在x的位置
+	count    int   // 当前堆容量
+	capacity int   //初始化容量
 }
 
 // 构造函数, 构造一个空堆, 可容纳capacity个元素
@@ -18,7 +18,7 @@ func NewIndexMaxHeap(cap int) *IndexMaxHeap {
 	heap.data = make([]int, cap+1) //跳过0从1开始
 	heap.indexes = make([]int, cap+1)
 	heap.reverse = make([]int, cap+1)
-	for i := 0 ; i <= heap.capacity ; i ++ { //索引i在堆中的位置，初始化时没有，为0
+	for i := 0; i <= heap.capacity; i++ { //索引i在堆中的位置，初始化时没有，为0
 		heap.reverse[i] = 0 // 从1开始，0表示跟本不存在
 	}
 	heap.count = 0
@@ -39,10 +39,10 @@ func NewIndexMaxHeapHeapify(arr []int) *IndexMaxHeap {
 	heap.capacity = n
 	// for i := 0; i < n; i++ {
 	// 	heap.data[i+1] = arr[i]
-	// } 
-	copy(heap.data[1:],arr)
+	// }
+	copy(heap.data[1:], arr)
 	heap.count = n
-	for i := heap.count/2; i >= 1; i-- { // 从第一个非叶子节点开始，叶子节点都是最大堆	
+	for i := heap.count / 2; i >= 1; i-- { // 从第一个非叶子节点开始，叶子节点都是最大堆
 		heap.shiftDown(i)
 	}
 	return heap
@@ -61,7 +61,7 @@ func (h IndexMaxHeap) IsEmpty() bool {
 // 看索引i所在的位置是否存在元素
 // 越界问题：i索引的元素真的存在在堆中，i在容量范围里不意味着一定在堆中
 func (h IndexMaxHeap) Contain(i int) bool {
-	if i + 1 >= 1 && i + 1 <= h.capacity {
+	if i+1 >= 1 && i+1 <= h.capacity {
 		return h.reverse[i+1] != 0
 	}
 	return false
@@ -70,7 +70,7 @@ func (h IndexMaxHeap) Contain(i int) bool {
 // 新元素的索引为i, 元素为item
 // 传入的i对用户而言,是从0索引的,内部从1开始
 func (h *IndexMaxHeap) Insert(i int, item int) {
-	if h.count+1 <= h.capacity && i+1>=1 && i + 1 <= h.capacity {
+	if h.count+1 <= h.capacity && i+1 >= 1 && i+1 <= h.capacity {
 		// 再插入一个新元素前,还需要保证索引i所在的位置是没有元素的
 		if !h.Contain(i) {
 			i += 1
@@ -79,17 +79,18 @@ func (h *IndexMaxHeap) Insert(i int, item int) {
 			h.reverse[i] = h.count + 1
 
 			h.count++
-			h.shiftUp(h.count)	
-		}	
+			h.shiftUp(h.count)
+		}
 	}
 }
+
 // 从最大索引堆中取出堆顶元素, 即索引堆中所存储的最大数据
 func (h *IndexMaxHeap) ExtractMax() int {
 	var ret int
 	if h.count > 0 {
 		ret = h.data[h.indexes[1]]
-		h.indexes[1],h.indexes[h.count] = h.indexes[h.count],h.indexes[1]
-		h.reverse[h.indexes[1]] = 1 // 第一个位置
+		h.indexes[1], h.indexes[h.count] = h.indexes[h.count], h.indexes[1]
+		h.reverse[h.indexes[1]] = 1       // 第一个位置
 		h.reverse[h.indexes[h.count]] = 0 //删除置0
 		h.count--
 		h.shiftDown(1)
@@ -102,9 +103,9 @@ func (h *IndexMaxHeap) ExtractMax() int {
 func (h *IndexMaxHeap) ExtractMaxIndex() int {
 	var ret int
 	if h.count > 0 {
-		ret = h.indexes[1]-1 // 1→0
-		h.indexes[1],h.indexes[h.count] = h.indexes[h.count],h.indexes[1]
-		h.reverse[h.indexes[1]] = 1 // 第一个位置
+		ret = h.indexes[1] - 1 // 1→0
+		h.indexes[1], h.indexes[h.count] = h.indexes[h.count], h.indexes[1]
+		h.reverse[h.indexes[1]] = 1       // 第一个位置
 		h.reverse[h.indexes[h.count]] = 0 //删除置0
 		h.count--
 		h.shiftDown(1)
@@ -160,8 +161,8 @@ func (h *IndexMaxHeap) Update(i int, newItem int) {
 		// 我们可以非常简单的通过reverse直接定位索引i在indexes中的位置
 		// 整体变为O(logn)
 		j := h.reverse[i] // O(1)
-		h.shiftUp(j) // O(logn)
-		h.shiftDown(j) // O(logn)	
+		h.shiftUp(j)      // O(logn)
+		h.shiftDown(j)    // O(logn)
 	} else {
 		fmt.Println("索引越界")
 	}
@@ -169,17 +170,18 @@ func (h *IndexMaxHeap) Update(i int, newItem int) {
 
 // 新插入数据与父节点比较，k是数据的索引
 func (h *IndexMaxHeap) shiftUp(k int) {
-	for k >1 && h.data[h.indexes[k/2]] < h.data[h.indexes[k]] {
-		h.indexes[k],h.indexes[k/2] = h.indexes[k/2],h.indexes[k] // 交换索引，非数据
-		h.reverse[h.indexes[k/2]] = k/2
+	for k > 1 && h.data[h.indexes[k/2]] < h.data[h.indexes[k]] {
+		h.indexes[k], h.indexes[k/2] = h.indexes[k/2], h.indexes[k] // 交换索引，非数据
+		h.reverse[h.indexes[k/2]] = k / 2
 		h.reverse[h.indexes[k]] = k
 		k /= 2
 	}
 }
+
 // 将最后一个元素放置顶端，然后向下排序(谁大跟谁换)
 func (h *IndexMaxHeap) shiftDown(k int) {
 	for 2*k <= h.count { // k存在左子节点
-	    j := 2*k // 在此轮循环中,data[k]和data[j]交换位置
+		j := 2 * k // 在此轮循环中,data[k]和data[j]交换位置
 		if j+1 <= h.count && h.data[h.indexes[j+1]] > h.data[h.indexes[j]] {
 			j += 1
 		}
@@ -187,7 +189,7 @@ func (h *IndexMaxHeap) shiftDown(k int) {
 		if h.data[h.indexes[k]] >= h.data[h.indexes[j]] {
 			break
 		}
-		h.indexes[k],h.indexes[j] = h.indexes[j],h.indexes[k]
+		h.indexes[k], h.indexes[j] = h.indexes[j], h.indexes[k]
 		h.reverse[h.indexes[k]] = k
 		h.reverse[h.indexes[j]] = j
 		k = j

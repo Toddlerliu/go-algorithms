@@ -40,22 +40,22 @@ func TestFBinarySearch(t *testing.T) {
 
 func TestFloor(t *testing.T) {
 	fmt.Println("======test Floor")
-	s := []string{"b", "c", "gg","gg","gg","gg","x"}
+	s := []string{"b", "c", "gg", "gg", "gg", "gg", "x"}
 	exist, index := Floor(s, "gg")
 	if exist {
-		fmt.Println("exist,index is:", exist,index)
+		fmt.Println("exist,index is:", exist, index)
 	} else {
-		fmt.Println("not exist",exist,index)
+		fmt.Println("not exist", exist, index)
 	}
 }
 
 func TestCeil(t *testing.T) {
 	fmt.Println("======test Ceil")
-	s := []string{"b", "c", "gg","gg","gg","gg","x"}
+	s := []string{"b", "c", "gg", "gg", "gg", "gg", "x"}
 	exist, index := Ceil(s, "f")
 	if exist {
-		fmt.Println("exist,index is:", exist,index)
+		fmt.Println("exist,index is:", exist, index)
 	} else {
-		fmt.Println("not exist",exist,index)
+		fmt.Println("not exist", exist, index)
 	}
 }
