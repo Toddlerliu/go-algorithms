@@ -108,3 +108,51 @@ func maxKeyNode(node *node) *node {
 	}
 	return node
 }
+
+func (bst *BinarySearchTree) DeleteMinNode() *node {
+	return deleteMinNode(bst.root)
+}
+
+func deleteMinNode(node *node) *node {
+	if node == nil {
+		return nil
+	}
+	if node.left != nil {
+		return deleteMinNode(node.left)
+	}
+	return node
+}
+
+func (bst *BinarySearchTree) DeleteMaxNode() *node {
+	return deleteMaxNode(bst.root)
+}
+
+func deleteMaxNode(node *node) *node {
+	if node == nil {
+		return nil
+	}
+	if node.right != nil {
+		return deleteMaxNode(node.right)
+	}
+	return node
+}
+
+func (bst *BinarySearchTree) Delete(key string) (*node, bool) {
+	return delete(bst.root, key)
+}
+
+func delete(node *node, key string) (*node, bool) {
+	if node == nil {
+		return nil, false
+	}
+	if key < node.key {
+		return delete(node.left, key)
+	} else if key > node.key {
+		return delete(node.right, key)
+	} else {
+		// TO DO
+		// 无子节点
+	}
+	return node, true
+
+}
