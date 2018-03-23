@@ -28,7 +28,7 @@ func (bst BinarySearchTree) Size() int {
 }
 
 func (bst BinarySearchTree) IsEmpty() bool {
-	return bst.count == 0 // bst.root == nil
+	return bst.root == nil // bst.count == 0
 }
 
 // 新增操作，若key存在更新value
@@ -37,10 +37,10 @@ func (bst *BinarySearchTree) Insert(key, value string) {
 }
 
 // 在当前节点node为根节点的bst中增加下一个节点；
-// 新增true；更新false
 // 返回插入新节点后的bst的根（新创建的节点）
 func insert(node *node, key, value string) *node {
 	if node == nil { // 递归到底
+		// count ++
 		return newNode(key, value)
 	}
 
@@ -50,6 +50,61 @@ func insert(node *node, key, value string) *node {
 		node.left = insert(node.left, key, value)
 	} else { // 右子树
 		node.right = insert(node.right, key, value)
+	}
+	return node
+}
+
+func (bst *BinarySearchTree) Get(key string) string {
+	return get(bst.root, key)
+}
+
+func get(node *node, key string) string {
+	if node == nil {
+		return "-1"
+	}
+
+	if key == node.key {
+		return node.value
+	} else if key < node.key {
+		return get(node.left, key)
+	} else {
+		return get(node.right, key)
+	}
+}
+
+func (bst *BinarySearchTree) MinKey() string {
+	return minKeyNode(bst.root).key
+}
+
+func (bst *BinarySearchTree) MinKeyValue() string {
+	return minKeyNode(bst.root).value
+}
+
+func minKeyNode(node *node) *node {
+	if node == nil {
+		return nil
+	}
+
+	if node.left != nil {
+		return minKeyNode(node.left)
+	}
+	return node
+}
+
+func (bst *BinarySearchTree) MaxKey() string {
+	return maxKeyNode(bst.root).key
+}
+
+func (bst *BinarySearchTree) MaxKeyValue() string {
+	return maxKeyNode(bst.root).value
+}
+
+func maxKeyNode(node *node) *node {
+	if node == nil {
+		return nil
+	}
+	if node.right != nil {
+		return maxKeyNode(node.right)
 	}
 	return node
 }
