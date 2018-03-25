@@ -1,5 +1,12 @@
 package mybinarysearch
 
+var (
+	// 遍历返回
+	preKeys []string = make([]string, 0)
+	inKeys []string = make([]string, 0)
+	postKeys []string = make([]string, 0)
+)
+
 type node struct {
 	key   string //k-v都是string，key是二叉搜索树
 	value string
@@ -54,21 +61,21 @@ func insert(node *node, key, value string) *node {
 	return node
 }
 
-func (bst *BinarySearchTree) Get(key string) string {
-	return get(bst.root, key)
+// 查找：若找到返回value和true；否则""和false
+func (bst *BinarySearchTree) Search(key string) (string, bool) {
+	return search(bst.root, key)
 }
 
-func get(node *node, key string) string {
+func search(node *node, key string) (string, bool) {
 	if node == nil {
-		return "-1"
+		return "not found", false
 	}
-
 	if key == node.key {
-		return node.value
+		return node.value, true
 	} else if key < node.key {
-		return get(node.left, key)
+		return search(node.left, key)
 	} else {
-		return get(node.right, key)
+		return search(node.right, key)
 	}
 }
 
@@ -154,5 +161,46 @@ func delete(node *node, key string) (*node, bool) {
 		// 无子节点
 	}
 	return node, true
+}
 
+//前序遍历：先访问当前节点，再依次递归访问左右子树
+func (bst *BinarySearchTree) PreOrder() []string {
+	preOrder(bst.root)
+	return preKeys
+}
+
+func preOrder(node *node) {
+	if node != nil {
+		preKeys = append(preKeys, node.key)
+		preOrder(node.left)
+		preOrder(node.right)
+	}
+}
+
+//中序遍历：先递归访问左子树，再访问自身，再递归访问右子树。即从小到大排序（左<自身<右）
+func (bst *BinarySearchTree) InOrder() []string {
+	inOrder(bst.root)
+	return inKeys
+}
+
+func inOrder(node *node) {
+	if node != nil {
+		inOrder(node.left)
+		inKeys = append(inKeys, node.key)
+		inOrder(node.right)
+	}
+}
+
+//后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
+func (bst *BinarySearchTree) PostOrder() []string {
+	postOrder(bst.root)
+	return postKeys
+}
+
+func postOrder(node *node) {
+	if node != nil {
+		postOrder(node.left)
+		postOrder(node.right)
+		postKeys = append(postKeys, node.key)
+	}
 }
