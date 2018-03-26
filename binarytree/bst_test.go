@@ -24,4 +24,5 @@ func TestBSTInset(t *testing.T) {
 	fmt.Println("前序排序：",bst.PreOrder())
 	fmt.Println("中序排序：",bst.InOrder())
 	fmt.Println("后序排序：",bst.PostOrder())
+	fmt.Println("层序排序：",bst.LevelOrder())
 }

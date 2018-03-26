@@ -1,10 +1,15 @@
 package mybinarysearch
 
+import (
+	"container/list"
+)
+
 var (
 	// 遍历返回
-	preKeys []string = make([]string, 0)
-	inKeys []string = make([]string, 0)
-	postKeys []string = make([]string, 0)
+	preKeys   []string = make([]string, 0)
+	inKeys    []string = make([]string, 0)
+	postKeys  []string = make([]string, 0)
+	levelKeys []string = make([]string, 0)
 )
 
 type node struct {
@@ -163,7 +168,8 @@ func delete(node *node, key string) (*node, bool) {
 	return node, true
 }
 
-//前序遍历：先访问当前节点，再依次递归访问左右子树
+// 深度优先遍历：O(n)
+// 前序遍历：先访问当前节点，再依次递归访问左右子树
 func (bst *BinarySearchTree) PreOrder() []string {
 	preOrder(bst.root)
 	return preKeys
@@ -177,7 +183,7 @@ func preOrder(node *node) {
 	}
 }
 
-//中序遍历：先递归访问左子树，再访问自身，再递归访问右子树。即从小到大排序（左<自身<右）
+// 中序遍历：先递归访问左子树，再访问自身，再递归访问右子树。即从小到大排序（左<自身<右）
 func (bst *BinarySearchTree) InOrder() []string {
 	inOrder(bst.root)
 	return inKeys
@@ -191,7 +197,7 @@ func inOrder(node *node) {
 	}
 }
 
-//后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
+// 后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
 func (bst *BinarySearchTree) PostOrder() []string {
 	postOrder(bst.root)
 	return postKeys
@@ -203,4 +209,25 @@ func postOrder(node *node) {
 		postOrder(node.right)
 		postKeys = append(postKeys, node.key)
 	}
+}
+
+// 广度优先遍历（层序）O(n)
+// 利用队列
+func (bst *BinarySearchTree) LevelOrder() []string {
+	q := list.New()
+	q.PushBack(bst.root) // 入列
+	for q.Len() > 0 {
+		nd := q.Front()
+		if n, ok := nd.Value.(*node); ok { //出队
+			levelKeys = append(levelKeys, n.key)
+			q.Remove(nd)
+			if n.left != nil {
+				q.PushBack(n.left)
+			}
+			if n.right != nil {
+				q.PushBack(n.right)
+			}
+		}
+	}
+	return levelKeys
 }
