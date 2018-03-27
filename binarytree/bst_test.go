@@ -25,4 +25,10 @@ func TestBSTInset(t *testing.T) {
 	fmt.Println("中序排序：",bst.InOrder())
 	fmt.Println("后序排序：",bst.PostOrder())
 	fmt.Println("层序排序：",bst.LevelOrder())
+	fmt.Println("删除最小：")
+	bst.RemoveMin()
+	fmt.Println("中序第一个为最小：",bst.InOrder())
+	fmt.Println("删除最大：")
+	bst.RemoveMax()
+	fmt.Println("中序最后一个为最大：",bst.InOrder())
 }

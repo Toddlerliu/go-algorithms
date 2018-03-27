@@ -93,14 +93,10 @@ func (bst *BinarySearchTree) MinKeyValue() string {
 }
 
 func minKeyNode(node *node) *node {
-	if node == nil {
-		return nil
+	if node.left == nil {
+		return node
 	}
-
-	if node.left != nil {
-		return minKeyNode(node.left)
-	}
-	return node
+	return minKeyNode(node.left)
 }
 
 func (bst *BinarySearchTree) MaxKey() string {
@@ -112,60 +108,75 @@ func (bst *BinarySearchTree) MaxKeyValue() string {
 }
 
 func maxKeyNode(node *node) *node {
-	if node == nil {
-		return nil
+	if node.right == nil {
+		return node
 	}
-	if node.right != nil {
-		return maxKeyNode(node.right)
+	return maxKeyNode(node.right)
+}
+
+// 最小值所在的节点只会有右孩子；最大值所在的节点只会有左孩子。
+
+// 删除最小节点(key)
+// 删除只有右孩子的节点
+func (bst *BinarySearchTree) RemoveMin() {
+	if bst.root !=nil {
+		bst.root = removeMin(bst.root)
 	}
+}
+
+// 返回删除节点后新的二分搜索树的根
+func removeMin(node *node) *node {
+	if node.left == nil { // 左孩子为空，就是最小节点
+		// 右节点存在，代替现在的node节点成为新的二分搜索树的根，作为原来node节点的父节点的新的左孩子
+		// 右节点不存在即为nil
+		rn := node.right
+		return rn
+	}
+	node.left = removeMin(node.left)
 	return node
 }
 
-func (bst *BinarySearchTree) DeleteMinNode() *node {
-	return deleteMinNode(bst.root)
+// 删除最大节点(key)
+// 删除只有左孩子的节点
+func (bst *BinarySearchTree) RemoveMax() {
+	if bst.root !=nil {
+		bst.root = removeMax(bst.root)
+	}
 }
 
-func deleteMinNode(node *node) *node {
-	if node == nil {
-		return nil
+// 返回删除节点后新的二分搜索树的根
+func removeMax(node *node) *node {
+	if node.right == nil { // 左孩子为空，就是最小节点
+		// 右节点存在，代替现在的node节点成为新的二分搜索树的根，作为原来node节点的父节点的新的左孩子
+		// 右节点不存在即为nil
+		ln := node.left
+		return ln
 	}
-	if node.left != nil {
-		return deleteMinNode(node.left)
-	}
+	node.right = removeMax(node.right)
 	return node
 }
 
-func (bst *BinarySearchTree) DeleteMaxNode() *node {
-	return deleteMaxNode(bst.root)
+// 删除节点
+func (bst *BinarySearchTree) Remove(key string) {
+	 remove(bst.root, key)
 }
 
-func deleteMaxNode(node *node) *node {
+// 删除以node为根节点的二分搜索树中键值为key的节点
+// 返回删除节点后新的二分搜索树的根
+func remove(node *node, key string) *node {
 	if node == nil {
 		return nil
-	}
-	if node.right != nil {
-		return deleteMaxNode(node.right)
-	}
-	return node
-}
-
-func (bst *BinarySearchTree) Delete(key string) (*node, bool) {
-	return delete(bst.root, key)
-}
-
-func delete(node *node, key string) (*node, bool) {
-	if node == nil {
-		return nil, false
 	}
 	if key < node.key {
-		return delete(node.left, key)
+		node.left =  remove(node.left, key)
+		return node
 	} else if key > node.key {
-		return delete(node.right, key)
+		node.right = remove(node.right, key)
+		return node
 	} else {
 		// TO DO
-		// 无子节点
 	}
-	return node, true
+	return node
 }
 
 // 深度优先遍历：O(n)
