@@ -119,7 +119,7 @@ func maxKeyNode(node *node) *node {
 // 删除最小节点(key)
 // 删除只有右孩子的节点
 func (bst *BinarySearchTree) RemoveMin() {
-	if bst.root !=nil {
+	if bst.root != nil {
 		bst.root = removeMin(bst.root)
 	}
 }
@@ -139,7 +139,7 @@ func removeMin(node *node) *node {
 // 删除最大节点(key)
 // 删除只有左孩子的节点
 func (bst *BinarySearchTree) RemoveMax() {
-	if bst.root !=nil {
+	if bst.root != nil {
 		bst.root = removeMax(bst.root)
 	}
 }
@@ -158,25 +158,43 @@ func removeMax(node *node) *node {
 
 // 删除节点
 func (bst *BinarySearchTree) Remove(key string) {
-	 remove(bst.root, key)
+	remove(bst.root, key)
 }
 
 // 删除以node为根节点的二分搜索树中键值为key的节点
 // 返回删除节点后新的二分搜索树的根
+// O(logn)
 func remove(node *node, key string) *node {
 	if node == nil {
 		return nil
 	}
 	if key < node.key {
-		node.left =  remove(node.left, key)
+		node.left = remove(node.left, key)
 		return node
 	} else if key > node.key {
 		node.right = remove(node.right, key)
 		return node
 	} else {
-		// TO DO
+		// 左子节点为空（只有右孩子）、左右孩子都为空
+		if node.left == nil {
+			rn := node.right
+			return rn
+		}
+		// 右孩子为空（只有左孩子）
+		if node.right == nil {
+			ln := node.left
+			return ln
+		}
+		// 左右孩子节点都存在
+		//delNode := node
+		// d节点右子树的最小节点s 代替 删除节点d（比d大的下一个节点s）
+		successor := minKeyNode(node.right)
+		// 删除右子树中的最小值s，然后s代替d，s的右节点为原来d的右节点
+		successor.right = removeMin(successor.right)
+		// 代替节点s的左节点即d的左节点
+		successor.left = node.left
+		return successor
 	}
-	return node
 }
 
 // 深度优先遍历：O(n)
