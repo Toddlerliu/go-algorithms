@@ -190,7 +190,7 @@ func remove(node *node, key string) *node {
 		// d节点右子树的最小节点s 代替 删除节点d（比d大的下一个节点s）
 		successor := minKeyNode(node.right)
 		// 删除右子树中的最小值s，然后s代替d，s的右节点为原来d的右节点
-		successor.right = removeMin(successor.right)
+		successor.right = removeMin(node.right)
 		// 代替节点s的左节点即d的左节点
 		successor.left = node.left
 		return successor
