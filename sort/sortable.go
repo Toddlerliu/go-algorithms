@@ -1,4 +1,3 @@
-
 // 泛型辅助
 package mysort
 
@@ -39,7 +38,7 @@ func (arr floatArr) Swap(i int, j int) {
 	arr[i], arr[j] = arr[j], arr[i]
 }
 
-// string类型slice，按照字符串长度排序 
+// string类型slice，按照字符串长度排序
 type StrArr []string
 
 func (arr StrArr) Len() int {

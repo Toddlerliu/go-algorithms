@@ -43,9 +43,9 @@ func TestBSTInset(t *testing.T) {
 	bst1.Insert("44", "f")
 	bst1.Insert("46", "g")
 	bst1.Insert("50", "h")
-	fmt.Println("bst1中序排序：",bst1.InOrder())
+	fmt.Println("bst1中序排序：", bst1.InOrder())
 
 	fmt.Println("删除带有左右孩子的节点。。。")
 	bst1.Remove("45")
-	fmt.Println("bst1中序排序：",bst1.InOrder())
+	fmt.Println("bst1中序排序：", bst1.InOrder())
 }
