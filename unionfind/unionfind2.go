@@ -9,7 +9,7 @@ package unionfind
 
 type UnionFind2 struct {
 	parent []int
-	count  int //元素个数
+	count  int // 元素个数
 }
 
 func NewUnionFind2(n int) *UnionFind2 {
@@ -24,7 +24,7 @@ func NewUnionFind2(n int) *UnionFind2 {
 }
 
 // 参数：元素；返回：id
-// O()
+// O(1)
 func (uf UnionFind2) Find(p int) int {
 	if p >= 0 && p <= uf.count {
 		for p != uf.parent[p] {
