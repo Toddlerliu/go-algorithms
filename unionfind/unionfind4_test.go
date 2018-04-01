@@ -6,6 +6,7 @@ import (
 )
 
 func TestNewUnionFind4(t *testing.T) {
+	fmt.Println("============UF4==========")
 	uf := NewUnionFind4(5)
 	fmt.Println("uf:", uf)
 	fmt.Println("1的parent:", uf.Find(1))

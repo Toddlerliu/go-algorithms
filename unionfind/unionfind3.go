@@ -21,7 +21,7 @@ func NewUnionFind3(n int) *UnionFind3 {
 	return uf
 }
 
-// 参数：元素；返回：id
+// 参数：元素；返回：根节点
 // O(1)
 func (uf UnionFind3) Find(p int) int {
 	if p >= 0 && p <= uf.count {

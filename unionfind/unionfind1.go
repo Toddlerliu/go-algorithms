@@ -8,8 +8,8 @@ package unionfind
 // 每个连在一起的组有相同的id
 
 type UnionFind1 struct {
-	id    []int
-	count int //元素个数
+	id    []int // id相同连接
+	count int   // 元素个数
 }
 
 func NewUnionFind1(n int) *UnionFind1 {
