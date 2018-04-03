@@ -2,19 +2,15 @@ package graph
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestDenseGraph(t *testing.T) {
 	g := NewDenseGraph(3, false)
-	g.graph[0][0] = 0
-	g.graph[0][1] = 1
-	g.graph[0][2] = 1
-	g.graph[1][0] = 1
-	g.graph[1][1] = 0
-	g.graph[1][2] = 0
-	g.graph[2][0] = 1
-	g.graph[2][1] = 0
-	g.graph[2][2] = 1
-
 	PrintMatrix(g.graph)
+	fmt.Println("vers:",g.VersNum(),"edges:",g.EdgeNum())
+	fmt.Println("添加边。。。")
+	g.AddEdge(0,1)
+	PrintMatrix(g.graph)
+	fmt.Println("vers:",g.VersNum(),"edges:",g.EdgeNum())
 }
