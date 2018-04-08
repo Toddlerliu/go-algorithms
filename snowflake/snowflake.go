@@ -1,5 +1,7 @@
 package main
 
+// 改编自Twitter：
+// https://github.com/twitter/snowflake/blob/snowflake-2010/src/main/scala/com/twitter/service/snowflake/IdWorker.scala
 import (
 	"errors"
 	"sync"
@@ -16,53 +18,76 @@ const (
 	// 起始时间戳 (ms) 2006-01-02 15:04:05
 	epoch int64 = 1136214245000
 	// 工作机器id
-	workerIdBits uint = 10
-	// 序列号
-	sequenceIdBits uint = 12
+	workerIdBits uint = 5
+
+	datacenterIdBits uint = 5
 	// 最大编号
-	maxWorkerId int64 = -1 ^ (-1 << workerIdBits) // 0xfff 1024
+	maxWorkerId int64 = -1 ^ (-1 << workerIdBits) // 31
+
+	maxDatacenterId int64 = -1 ^ (-1 << datacenterIdBits) // 31
+	// 序列号
+	sequenceBits uint = 12
 	// 最大序列号
-	maxSequenceId int64 = -1 ^ (-1 << sequenceIdBits) // 0x3ff 4096
+	//maxSequenceId int64 = -1 ^ (-1 << sequenceBits)
+
+	workerIdShift      = sequenceBits                                   //12
+	datacenterIdShift  = sequenceBits + workerIdBits                    // 17
+	timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits // 22
+	sequenceMask       = -1 ^ (-1 << sequenceBits)                      // 0x3ff 4095
 )
 
-// 工作节点 最大1024个
-type WorkerNode struct {
+type IdWorker struct {
 	mu            sync.Mutex
-	nodeId        int64
+	workerId      int64
+	datacenterId  int64
 	lastTimestamp int64
 	sequence      int64
 }
 
-func NewWorkerNode(nodeId int64) (*WorkerNode, error) {
-	worker := new(WorkerNode)
-	if nodeId < 0 || nodeId > maxWorkerId {
-		return nil, errors.New("the nodeId must between 0 and 1024")
+func NewIdWorker(workerId, datacenterId int64) (*IdWorker, error) {
+	worker := new(IdWorker)
+	if workerId < 0 || workerId > maxWorkerId {
+		return nil, errors.New("the workerId must between 0 and 31")
 	}
-	worker.nodeId = nodeId
-	worker.lastTimestamp = 0
+	if datacenterId > maxDatacenterId || datacenterId < 0 {
+		return nil, errors.New("the datacenterId must between 0 and 31")
+	}
+	worker.workerId = workerId
+	worker.datacenterId = datacenterId
+	worker.lastTimestamp = -1
 	worker.sequence = 0
 	return worker, nil
 }
 
-func (node *WorkerNode) GenerateID() (int64, error) {
+func (node *IdWorker) GenerateID() (int64, error) {
 	node.mu.Lock()
 	defer node.mu.Unlock()
 	// ms
 	now := time.Now().UnixNano() / 1000 / 1000
-	if node.lastTimestamp == now {
-		node.sequence =(node.sequence + 1) & maxWorkerId
-		// 本ms内sequence分配完（>4096）
-		if node.sequence > maxSequenceId {
-			for node.lastTimestamp >= now {
-				now = time.Now().UnixNano()
-			}
-		}
-	} else if node.lastTimestamp > now {
+
+	if now < node.lastTimestamp {
 		return 0, errors.New("error time")
+	}
+
+	if now == node.lastTimestamp {
+		node.sequence = (node.sequence + 1) & sequenceMask // 1000000000000(4096) & 111111111111(4095) = 0
+		// 本ms内sequence分配完(4096)
+		if node.sequence == 0 {
+			now = tilNextMillis(node.lastTimestamp)
+		}
 	} else {
-		// 本毫秒内 sequence 用完
 		node.sequence = 0
 	}
+
 	node.lastTimestamp = now
-	return (now-epoch)<<(workerIdBits+sequenceIdBits) | node.nodeId<<12 | node.sequence, nil
+
+	return (node.lastTimestamp-epoch)<<timestampLeftShift | node.datacenterId<<datacenterIdShift | node.workerId<<workerIdShift | node.sequence, nil
+}
+
+func tilNextMillis(lastTimestamp int64) int64 {
+	tmp := time.Now().UnixNano() / 1000 / 1000
+	for tmp <= lastTimestamp {
+		tmp = time.Now().UnixNano() / 1000 / 1000
+	}
+	return tmp
 }

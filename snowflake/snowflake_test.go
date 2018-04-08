@@ -6,6 +6,11 @@ import (
 )
 
 func TestID(t *testing.T) {
-	node,_:=NewWorkerNode(10)
-	fmt.Println(node.GenerateID())
+	var i int64
+	for i = 1; i <= 10; i++ {
+		go func() {
+			node, _ := NewIdWorker(i, i)
+			fmt.Println(node.GenerateID())
+		}()
+	}
 }

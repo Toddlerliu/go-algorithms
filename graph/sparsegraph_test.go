@@ -1,9 +1,9 @@
 package graph
 
 import (
-	"testing"
 	"fmt"
 	"reflect"
+	"testing"
 )
 
 func TestSparseGraph(t *testing.T) {
