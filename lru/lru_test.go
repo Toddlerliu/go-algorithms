@@ -14,19 +14,27 @@ func TestLRUCache(t *testing.T) {
 	c.Set("a", "a")
 	c.Set("b", "b")
 	fmt.Println("len:", c.Size())
-	fmt.Println("front:", c.list.Front().Value.(*entry).key, c.list.Front().Value.(*entry).value)
+	for e := c.list.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value)
+	}
+	fmt.Println("get a")
 	c.Get("a")
-	fmt.Println("front:", c.list.Front().Value.(*entry).key, c.list.Front().Value.(*entry).value)
+	for e := c.list.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value)
+	}
+	fmt.Println("get 1")
 	c.Get(1)
-	fmt.Println("front:", c.list.Front().Value.(*entry).key, c.list.Front().Value.(*entry).value)
-
-	fmt.Println("last:", c.list.Back().Value.(*entry).key, c.list.Back().Value.(*entry).value)
-
+	for e := c.list.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value)
+	}
 	fmt.Println("remove oldest:")
 	c.RemoveOldest()
-	fmt.Println("last:", c.list.Back().Value.(*entry).key, c.list.Back().Value.(*entry).value)
+	for e := c.list.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value)
+	}
 	fmt.Println("remove :")
 	c.Remove(3)
-	fmt.Println("last:", c.list.Back().Value.(*entry).key, c.list.Back().Value.(*entry).value)
-	fmt.Println("last:", c.cache[3])
+	for e := c.list.Front(); e != nil; e = e.Next() {
+		fmt.Println(e.Value)
+	}
 }
