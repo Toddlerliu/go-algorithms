@@ -12,6 +12,10 @@ type DoubleList struct {
 	tail *DNode
 }
 
-func NewDoubleList(cap int)  {
+func NewDNode(prev *DNode,data interface{},next *DNode) *DNode {
+	return &DNode{data,prev,next}
+}
+
+func NewDoubleList() *DoubleList {
 
 }
