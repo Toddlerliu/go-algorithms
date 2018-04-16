@@ -1,6 +1,8 @@
 package list
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type SNode struct {
 	data interface{} // 存储的数据
@@ -13,17 +15,13 @@ type SingleList struct {
 	tail *SNode
 }
 
-func NewSNode(data interface{}, next *SNode) *SNode {
-	return &SNode{data, next}
-}
-
 func NewSingleList() *SingleList {
 	return &SingleList{0, nil, nil}
 }
 
 func (l SingleList) IsEmpty() bool {
-	//return l.size==0
-	return l.head.next == nil
+	return l.size == 0
+	//return l.head.next == nil
 }
 
 func (l SingleList) Length() int {
@@ -32,7 +30,7 @@ func (l SingleList) Length() int {
 
 func (l *SingleList) Add(data interface{}) bool {
 	node := new(SNode)
-	node.data=data
+	node.data = data
 	if node == nil {
 		return false
 	}
@@ -47,31 +45,94 @@ func (l *SingleList) Add(data interface{}) bool {
 	return true
 }
 
-func (l *SingleList) Insert(position int, node *SNode) bool {
-	if node == nil || position > l.size || position < 1 { // posi >=1   size>=0
+// 从1开始
+func (l *SingleList) Insert(index int, data interface{}) bool {
+	if data == nil || index > l.size || index < 1 { // posi >=1   size>=0
 		return false
 	}
-	if position == 1 {
+	node := &SNode{data: data}
+	if index == 1 {
 		// AddFirst()
 		node.next = l.head
 		l.head = node
 	} else {
 		tmp := l.head
-		for i := 1; i < position; i++ {
+		for i := 1; i < index; i++ {
 			tmp = tmp.next
 		}
 		// prev(tmp) [new] next
-		node.next=tmp.next
-		tmp.next=tmp
+		node.next = tmp.next
+		tmp.next = tmp
 	}
 	l.size++
 	return true
 }
 
-func (l *SingleList) PrintSingleList() {
+func (l SingleList) GetByIndex(index int) *SNode {
+	if index > l.size {
+		return nil
+	}
+	tmp := l.head
+	for i := 1; i < index; i++ {
+		tmp = tmp.next
+	}
+	return tmp
+}
+
+// 从1开始
+func (l *SingleList) RemoveByIndex(index int) bool {
+	if index > l.size || index < 1 || l.IsEmpty() {
+		return false
+	}
+	if index == 1 {
+		l.head = l.head.next
+		if l.size == 1 {
+			l.tail = nil
+		}
+	} else {
+		tmp := l.head
+		for i := 1; i < index; i++ {
+			tmp = tmp.next
+		}
+		// prev(tmp) [index] next
+		tmp.next = tmp.next.next
+		if index == l.size {
+			l.tail = tmp
+		}
+	}
+	l.size--
+	return true
+}
+
+func (l *SingleList) RemoveData(data interface{}) bool {
+	if l.IsEmpty() {
+		return false
+	}
+	node := l.head
+	for node.next != nil {
+		if node.data == data {
+			node.next = node.next.next
+			l.size--
+			return true
+		}
+	}
+	return false
+}
+
+func (l *SingleList) RemoveLast() {
+
+}
+
+func (l *SingleList) PrintSingleList() []interface{} {
+	obj := make([]interface{}, l.size)
 	if l.IsEmpty() {
 		fmt.Println("list is empty")
-		return
+		return nil
 	}
-	head := l.head
+	node := l.head
+	obj = append(obj, node.data)
+	for node.next != nil {
+		obj = append(obj, node.data)
+	}
+	return obj
 }

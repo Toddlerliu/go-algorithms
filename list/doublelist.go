@@ -16,6 +16,6 @@ func NewDNode(prev *DNode,data interface{},next *DNode) *DNode {
 	return &DNode{data,prev,next}
 }
 
-func NewDoubleList() *DoubleList {
-
-}
+//func NewDoubleList() *DoubleList {
+//
+//}
