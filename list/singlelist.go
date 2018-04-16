@@ -47,10 +47,10 @@ func (l *SingleList) Add(data interface{}) bool {
 
 // 从1开始
 func (l *SingleList) Insert(index int, data interface{}) bool {
-	if data == nil || index > l.size || index < 1 { // posi >=1   size>=0
+	if data == nil || index > l.size || index < 1 { // index >=1   size>=0
 		return false
 	}
-	node := &SNode{data: data}
+	node := &SNode{data: data,next:nil}
 	if index == 1 {
 		// AddFirst()
 		node.next = l.head
@@ -123,16 +123,17 @@ func (l *SingleList) RemoveLast() {
 
 }
 
-func (l *SingleList) PrintSingleList() []interface{} {
-	obj := make([]interface{}, l.size)
+func (l *SingleList) GetAll() []interface{} {
+	obj := make([]interface{}, 0)
 	if l.IsEmpty() {
 		fmt.Println("list is empty")
 		return nil
 	}
 	node := l.head
-	obj = append(obj, node.data)
 	for node.next != nil {
 		obj = append(obj, node.data)
+		node=node.next
 	}
+	obj = append(obj, node.data)
 	return obj
 }
