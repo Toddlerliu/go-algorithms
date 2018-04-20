@@ -1,9 +1,12 @@
 package list
 
-import "fmt"
+import (
+	"fmt"
+	"go/types"
+)
 
 type DNode struct {
-	data interface{} // 存储的数据
+	data interface{}
 	prev *DNode
 	next *DNode
 }
@@ -19,19 +22,32 @@ func NewDoublyLinkedList() *DoublyLinkedList {
 }
 
 func (l *DoublyLinkedList) IsEmpty() bool {
-	return false
+	return l.size == 0
 }
 
-func (l *DoublyLinkedList) Size(data interface{}) int {
-	return 0
+func (l *DoublyLinkedList) Size() int {
+	return l.size
 }
 
 func (l *DoublyLinkedList) Contains(data interface{}) bool {
 	return false
 }
 
-func (l *DoublyLinkedList) Add(data interface{}) bool {
-	return false
+// Append
+func (l *DoublyLinkedList) Add(data interface{}) {
+	node := &DNode{data: data}
+	if l.size == 0 {
+		l.head = node
+		l.tail = node
+		node.prev = nil
+		node.next = nil
+	} else {
+		node.prev = l.tail
+		node.next = nil
+		l.tail.next = node
+		l.tail = node
+	}
+	l.size++
 }
 
 func (l *DoublyLinkedList) Insert(index int, data interface{}) bool {
@@ -63,11 +79,11 @@ func (l *DoublyLinkedList) GetFirst() *SNode {
 	return nil
 }
 
-func (l *DoublyLinkedList) GetByIndex() *SNode {
+func (l *DoublyLinkedList) GetLast() *SNode {
 	return nil
 }
 
-func (l *DoublyLinkedList) GetLast() *SNode {
+func (l *DoublyLinkedList) GetByIndex() *SNode {
 	return nil
 }
 
