@@ -55,7 +55,7 @@ func (l *SingleLinkedList) AddLast(data interface{}) bool {
 
 // 从1开始
 func (l *SingleLinkedList) Insert(index int, data interface{}) bool {
-	if data == nil || index > l.size+1 || index < 1 { // index >=1   size>=0
+	if data == nil || index > l.size+1 || index < 1 || l.size < 1 { // index >=1   size>=0
 		return false
 	}
 	node := &SNode{data: data, next: nil}
