@@ -4,14 +4,6 @@ import (
 	"container/list"
 )
 
-var (
-	// 遍历返回
-	preKeys   []string = make([]string, 0)
-	inKeys    []string = make([]string, 0)
-	postKeys  []string = make([]string, 0)
-	levelKeys []string = make([]string, 0)
-)
-
 type node struct {
 	key   string //k-v都是string，key是二叉搜索树
 	value string
@@ -200,43 +192,46 @@ func remove(node *node, key string) *node {
 // 深度优先遍历：O(n)
 // 前序遍历：先访问当前节点，再依次递归访问左右子树
 func (bst *BinarySearchTree) PreOrder() []string {
-	preOrder(bst.root)
+	preKeys := make([]string, 0)
+	preOrder(bst.root, &preKeys)
 	return preKeys
 }
 
-func preOrder(node *node) {
+func preOrder(node *node, preKeys *[]string) {
 	if node != nil {
-		preKeys = append(preKeys, node.key)
-		preOrder(node.left)
-		preOrder(node.right)
+		*preKeys = append(*preKeys, node.key)
+		preOrder(node.left, preKeys)
+		preOrder(node.right, preKeys)
 	}
 }
 
 // 中序遍历：先递归访问左子树，再访问自身，再递归访问右子树。即从小到大排序（左<自身<右）
 func (bst *BinarySearchTree) InOrder() []string {
-	inOrder(bst.root)
+	inKeys := make([]string, 0)
+	inOrder(bst.root, &inKeys)
 	return inKeys
 }
 
-func inOrder(node *node) {
+func inOrder(node *node, inKeys *[]string) {
 	if node != nil {
-		inOrder(node.left)
-		inKeys = append(inKeys, node.key)
-		inOrder(node.right)
+		inOrder(node.left, inKeys)
+		*inKeys = append(*inKeys, node.key)
+		inOrder(node.right, inKeys)
 	}
 }
 
 // 后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
 func (bst *BinarySearchTree) PostOrder() []string {
-	postOrder(bst.root)
+	postKeys := make([]string, 0)
+	postOrder(bst.root, &postKeys)
 	return postKeys
 }
 
-func postOrder(node *node) {
+func postOrder(node *node, postKeys *[]string) {
 	if node != nil {
-		postOrder(node.left)
-		postOrder(node.right)
-		postKeys = append(postKeys, node.key)
+		postOrder(node.left, postKeys)
+		postOrder(node.right, postKeys)
+		*postKeys = append(*postKeys, node.key)
 	}
 }
 
@@ -245,6 +240,7 @@ func postOrder(node *node) {
 func (bst *BinarySearchTree) LevelOrder() []string {
 	q := list.New()
 	q.PushBack(bst.root) // 入列
+	levelKeys := make([]string, 0)
 	for q.Len() > 0 {
 		nd := q.Front()
 		if n, ok := nd.Value.(*node); ok { //出队
