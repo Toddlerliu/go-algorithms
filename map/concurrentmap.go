@@ -25,14 +25,14 @@ func NewConcurrentMap() ConcurrentMap {
 	return cmap
 }
 
-func (cmp ConcurrentMap) GetSegment(key string) *ConcurrentMapSegment {
+func (cmap ConcurrentMap) GetSegment(key string) *ConcurrentMapSegment {
 	hasher := fnv.New32()
 	hasher.Write([]byte(key))
-	return cmp[hasher.Sum32()%uint32(SEGMENT_NUM)]
+	return cmap[hasher.Sum32()%uint32(SEGMENT_NUM)]
 }
 
-func (camp ConcurrentMap) IsEmpty() bool {
-	return camp.Size() == 0
+func (cmap ConcurrentMap) IsEmpty() bool {
+	return cmap.Size() == 0
 }
 
 func (cmap ConcurrentMap) Size() int {

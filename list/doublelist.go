@@ -6,12 +6,16 @@ type DNode struct {
 	next *DNode
 }
 
+// List
+// Queue
+// Stack
 type DoublyLinkedList struct {
 	size int
 	head *DNode
 	tail *DNode
 }
 
+// 可重复
 func NewDoublyLinkedList() *DoublyLinkedList {
 	return &DoublyLinkedList{0, nil, nil}
 }
@@ -27,11 +31,13 @@ func (l *DoublyLinkedList) Size() int {
 // 若存在返回index
 func (l *DoublyLinkedList) Contains(data interface{}) (int, bool) {
 	index := 1
-	for x := l.head; x.data != nil; x = x.next {
-		if x.data == data {
-			return index, true
+	if l.size > 0 {
+		for x := l.head; x.next != nil; x = x.next {
+			if x.data == data {
+				return index, true
+			}
+			index++
 		}
-		index++
 	}
 	return -1, false
 }
@@ -72,9 +78,9 @@ func (l *DoublyLinkedList) Insert(index int, data interface{}) bool {
 	node := &DNode{data: data}
 	if index == 1 {
 		node.prev = nil
-		node.next = l.tail
-		l.tail.prev = node
-		l.tail = node
+		node.next = l.head
+		l.head.prev = node
+		l.head = node
 	} else {
 		tmp := l.head
 		for i := 2; i < index; i++ {
@@ -101,48 +107,53 @@ func (l *DoublyLinkedList) InsertAll(index int, datas []interface{}) bool {
 	if datas == nil || l.size < 1 || index < 1 || index > l.size+1 {
 		return false
 	}
-	// prev(tmp) [new] next
-	if index == 1 {
-		tmp := l.head
-		node := &DNode{data: datas[0]}
-		l.head = node
-		for i := 2; i <= len(datas); i++ {
-			l.Add(datas[i-1])
-
-
-		}
-
-	} else {
-		tmp := l.head
-		for i := 2; i < index; i++ {
-			tmp = tmp.next
-		}
-		// prev(tmp) [new] next
-		node.prev = tmp
-		node.next = tmp.next
-		tmp.next.prev = node
-		tmp.next = node
+	i := index
+	for _, v := range datas {
+		l.Insert(i, v)
+		i++
 	}
-	l.size++
 	return true
 }
 
 // Replace
 func (l *DoublyLinkedList) Set(index int, data interface{}) bool {
-	return false
+	if data == nil || l.size < 1 || index < 1 || index > l.size+1 {
+		return false
+	}
+	tmp := l.head
+	for i := 1; i <= index; i++ {
+		if index == 1 {
+			tmp.data = data
+			return true
+		}
+		tmp = tmp.next
+	}
+	tmp.data = data
+	return true
 }
 
 func (l *DoublyLinkedList) GetFirst() *DNode {
 	return l.head
 }
 
+// Stack 出栈不删除(Peek)
 func (l *DoublyLinkedList) GetLast() *DNode {
 	return l.tail
 }
 
 // 从1开始
-func (l *DoublyLinkedList) GetByIndex() *DNode {
-	return nil
+func (l *DoublyLinkedList) GetByIndex(index int) *DNode {
+	if l.size < 1 || index < 1 || index > l.size+1 {
+		return nil
+	}
+	tmp := l.head
+	for i := 1; i < index; i++ {
+		if index == 1 {
+			return tmp
+		}
+		tmp = tmp.next
+	}
+	return tmp
 }
 
 func (l *DoublyLinkedList) GetAll() []interface{} {
@@ -160,26 +171,117 @@ func (l *DoublyLinkedList) GetAll() []interface{} {
 }
 
 func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
+	x := l.head
+	for i := 1; i <= l.size; i++ {
+		if x.data == data {
+			// first
+			if x.prev == nil {
+				l.RemoveFirst()
+				return true
+			}
+			// last
+			if x.next == nil {
+				l.RemoveLast()
+				return true
+			}
+			x.prev.next = x.next
+			x.next.prev = x.prev
+			l.size--
+			return true
+		}
+		x = x.next
+	}
 	return false
+
+	//for x := l.head; x.next != nil; x = x.next {
+	//	if x.data == data {
+	//		// first
+	//		if x.prev == nil {
+	//			l.RemoveFirst()
+	//			return true
+	//		}
+	//		// last
+	//		if x.next == nil {
+	//			//x.prev.next = nil
+	//			//l.tail = x.prev
+	//			//l.size--
+	//			l.RemoveLast()
+	//			return true
+	//		}
+	//		x.prev.next = x.next
+	//		x.next.prev = x.prev
+	//		l.size--
+	//		return true
+	//	}
+	//}
+	//return false
 }
 
 func (l *DoublyLinkedList) RemoveFirst() *DNode {
-	tmp := l.head
-	l.head=l.head.next
+	if l.size > 0 {
+		tmp := l.head
+		l.head.next.prev = nil
+		l.head = l.head.next
+		l.size--
+		return tmp
+	}
+	return nil
+}
+
+func (l *DoublyLinkedList) RemoveLast() *DNode {
+	tmp := l.tail
+	l.tail.prev.next = nil
+	l.tail = l.tail.prev
 	l.size--
 	return tmp
 }
 
-func (l *DoublyLinkedList) RemoveLast() *DNode {
-	return nil
-}
-
 func (l *DoublyLinkedList) RemoveByIndex(index int) *DNode {
-	return nil
+	if l.size < 1 || index < 1 || index > l.size+1 {
+		return nil
+	}
+	tmp := l.head
+	for i := 1; i <= index; i++ {
+		if index == 1 {
+			return l.RemoveFirst()
+		}
+		if tmp.next == nil {
+			return l.RemoveLast()
+		}
+		if i == index {
+			tmp.prev.next = tmp.next
+			tmp.next.prev = tmp.prev
+			l.size--
+		}
+		tmp = tmp.next
+	}
+	return tmp
 }
 
-func (l *DoublyLinkedList) RemoveAll(data []interface{}) bool {
-	return false
+func (l *DoublyLinkedList) RemoveAll(data []interface{}) {
+	for _, v := range data {
+		l.RemoveData(v)
+	}
+}
+
+// Queue 出队不删除
+func (l DoublyLinkedList) QueuePeek() *DNode {
+	return l.GetFirst()
+}
+
+// Queue 出队并删除
+func (l *DoublyLinkedList) Poll() *DNode {
+	return l.RemoveFirst()
+}
+
+// Stack 出栈不删除
+func (l DoublyLinkedList) StackPeek() *DNode {
+	return l.GetLast()
+}
+
+// Stack 出栈并删除
+func (l *DoublyLinkedList) Pop() *DNode {
+	return l.RemoveLast()
 }
 
 func (l *DoublyLinkedList) Clear() {
