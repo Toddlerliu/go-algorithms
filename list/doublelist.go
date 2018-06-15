@@ -32,7 +32,7 @@ func (l *DoublyLinkedList) Size() int {
 func (l *DoublyLinkedList) Contains(data interface{}) (int, bool) {
 	index := 1
 	if l.size > 0 {
-		for x := l.head; x.next != nil; x = x.next {
+		for x := l.head; x != nil; x = x.next {
 			if x.data == data {
 				return index, true
 			}
@@ -171,8 +171,7 @@ func (l *DoublyLinkedList) GetAll() []interface{} {
 }
 
 func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
-	x := l.head
-	for i := 1; i <= l.size; i++ {
+	for x := l.head; x != nil; x = x.next {
 		if x.data == data {
 			// first
 			if x.prev == nil {
@@ -181,6 +180,9 @@ func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
 			}
 			// last
 			if x.next == nil {
+				//x.prev.next = nil
+				//l.tail = x.prev
+				//l.size--
 				l.RemoveLast()
 				return true
 			}
@@ -189,11 +191,11 @@ func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
 			l.size--
 			return true
 		}
-		x = x.next
 	}
 	return false
 
-	//for x := l.head; x.next != nil; x = x.next {
+	//x := l.head
+	//for i := 1; i <= l.size; i++ {
 	//	if x.data == data {
 	//		// first
 	//		if x.prev == nil {
@@ -202,9 +204,6 @@ func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
 	//		}
 	//		// last
 	//		if x.next == nil {
-	//			//x.prev.next = nil
-	//			//l.tail = x.prev
-	//			//l.size--
 	//			l.RemoveLast()
 	//			return true
 	//		}
@@ -213,6 +212,7 @@ func (l *DoublyLinkedList) RemoveData(data interface{}) bool {
 	//		l.size--
 	//		return true
 	//	}
+	//	x = x.next
 	//}
 	//return false
 }
