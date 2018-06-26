@@ -27,7 +27,7 @@ func NewShortestPath(graph I, source int) *shortestpath {
 	spath.visited = make([]bool, graph.VersNum())
 	spath.from = make([]int, graph.VersNum())
 	spath.ord = make([]int, graph.VersNum())
-	for i, _ := range spath.from {
+	for i := 0; i < graph.VersNum(); i++ {
 		spath.from[i] = -1
 		spath.ord[i] = -1
 	}
@@ -35,6 +35,7 @@ func NewShortestPath(graph I, source int) *shortestpath {
 	// 广度优先遍历
 	queue := queue.NewQueue()
 	queue.Offer(source)
+	spath.visited[source] = true
 	spath.ord[source] = 0
 	for !queue.Empty() {
 		if i, ok := queue.Poll().(int); ok {
@@ -63,17 +64,20 @@ func (p shortestpath) ShowPath(dst int) []int {
 	return p.path(dst)
 }
 
-// path from source to dst
+// shortest path from source to dst
 func (p *shortestpath) path(dst int) (res []int) {
-	// 倒推
-	res = append(res, dst)
-	for p.from[dst] != -1 { // -1 是source
-		res = append(res, p.from[dst])
-		dst = p.from[dst]
+	if dst >= 0 && dst < p.graph.VersNum() {
+		// 倒推
+		res = append(res, dst)
+		for p.from[dst] != -1 { // -1 是source
+			res = append(res, p.from[dst])
+			dst = p.from[dst]
+		}
+		// 反转
+		utils.ReverseInt(res)
+		return
 	}
-	// 反转
-	utils.ReverseInt(res)
-	return
+	return nil
 }
 
 func (p *shortestpath) Length(dst int) int {
