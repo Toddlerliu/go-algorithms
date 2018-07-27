@@ -69,7 +69,7 @@ func (cmap *ConcurrentMap) Set(key string, value interface{}) {
 	segment.data[key] = value
 }
 
-func (cmap *ConcurrentMap) Update(key string,value interface{}) bool {
+func (cmap *ConcurrentMap) Update(key string, value interface{}) bool {
 	segment := cmap.GetSegment(key)
 	segment.mu.Lock()
 	defer segment.mu.Unlock()
@@ -84,5 +84,5 @@ func (cmap *ConcurrentMap) Remove(key string) {
 	segment := cmap.GetSegment(key)
 	segment.mu.Lock()
 	defer segment.mu.Unlock()
-	delete(segment.data,key)
+	delete(segment.data, key)
 }
