@@ -15,4 +15,7 @@ func TestFib(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		fmt.Println(y())
 	}
+	fmt.Println("====")
+	z := fibonacci3()
+	printFileContents(z)
 }
