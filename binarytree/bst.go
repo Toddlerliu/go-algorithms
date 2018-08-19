@@ -220,6 +220,16 @@ func inOrder(node *node, inKeys *[]string) {
 	}
 }
 
+// 使用Node非BinarySearchTree
+func (node *node) TraverseFunc(f func(*node)) {
+	if node == nil{
+		return
+	}
+	node.left.TraverseFunc(f)
+	f(node)
+	node.right.TraverseFunc(f)
+}
+
 // 后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
 func (bst *BinarySearchTree) PostOrder() []string {
 	postKeys := make([]string, 0)

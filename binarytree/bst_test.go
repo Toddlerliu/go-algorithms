@@ -48,4 +48,14 @@ func TestBSTInset(t *testing.T) {
 	fmt.Println("删除带有左右孩子的节点45。。。")
 	bst1.Remove("45")
 	fmt.Println("bst1中序遍历：", bst1.InOrder())
+
+	bst1.root.TraverseFunc(func(n *node) {
+		fmt.Println(n.key)
+	})
+
+	count :=0
+	bst1.root.TraverseFunc(func(n *node) {
+		count++
+	})
+	fmt.Printf("num of nodes is : %d",count)
 }
