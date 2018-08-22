@@ -2,23 +2,24 @@ package mybinarysearch
 
 import (
 	"container/list"
+	"fmt"
 )
 
-type node struct {
+type Node struct {
 	key   string //k-v都是string，key是二叉搜索树
 	value string
-	left  *node
-	right *node
+	left  *Node
+	right *Node
 }
 
 // 构造节点
-func newNode(key, value string) *node {
-	return &node{key, value, nil, nil}
+func newNode(key, value string) *Node {
+	return &Node{key, value, nil, nil}
 }
 
 // 左子节点 < 当前节点 < 右子节点
 type BinarySearchTree struct {
-	root  *node
+	root  *Node
 	count int
 }
 
@@ -42,7 +43,7 @@ func (bst *BinarySearchTree) Insert(key, value string) {
 
 // 在当前节点node为根节点的bst中增加下一个节点；
 // 返回插入新节点后的bst的根（新创建的节点）
-func insert(node *node, key, value string) *node {
+func insert(node *Node, key, value string) *Node {
 	if node == nil { // 递归到底
 		// count ++
 		return newNode(key, value)
@@ -63,7 +64,7 @@ func (bst *BinarySearchTree) Search(key string) (string, bool) {
 	return search(bst.root, key)
 }
 
-func search(node *node, key string) (string, bool) {
+func search(node *Node, key string) (string, bool) {
 	if node == nil {
 		return "not found", false
 	}
@@ -84,7 +85,7 @@ func (bst *BinarySearchTree) MinKeyValue() string {
 	return minKeyNode(bst.root).value
 }
 
-func minKeyNode(node *node) *node {
+func minKeyNode(node *Node) *Node {
 	if node.left == nil {
 		return node
 	}
@@ -99,7 +100,7 @@ func (bst *BinarySearchTree) MaxKeyValue() string {
 	return maxKeyNode(bst.root).value
 }
 
-func maxKeyNode(node *node) *node {
+func maxKeyNode(node *Node) *Node {
 	if node.right == nil {
 		return node
 	}
@@ -117,7 +118,7 @@ func (bst *BinarySearchTree) RemoveMin() {
 }
 
 // 返回删除节点后新的二分搜索树的根
-func removeMin(node *node) *node {
+func removeMin(node *Node) *Node {
 	if node.left == nil { // 左孩子为空，就是最小节点
 		// 右节点存在，代替现在的node节点成为新的二分搜索树的根，作为原来node节点的父节点的新的左孩子
 		// 右节点不存在即为nil
@@ -137,7 +138,7 @@ func (bst *BinarySearchTree) RemoveMax() {
 }
 
 // 返回删除节点后新的二分搜索树的根
-func removeMax(node *node) *node {
+func removeMax(node *Node) *Node {
 	if node.right == nil { // 左孩子为空，就是最小节点
 		// 右节点存在，代替现在的node节点成为新的二分搜索树的根，作为原来node节点的父节点的新的左孩子
 		// 右节点不存在即为nil
@@ -156,7 +157,7 @@ func (bst *BinarySearchTree) Remove(key string) {
 // 删除以node为根节点的二分搜索树中键值为key的节点
 // 返回删除节点后新的二分搜索树的根
 // O(logn)
-func remove(node *node, key string) *node {
+func remove(node *Node, key string) *Node {
 	if node == nil {
 		return nil
 	}
@@ -197,7 +198,7 @@ func (bst *BinarySearchTree) PreOrder() []string {
 	return preKeys
 }
 
-func preOrder(node *node, preKeys *[]string) {
+func preOrder(node *Node, preKeys *[]string) {
 	if node != nil {
 		*preKeys = append(*preKeys, node.key)
 		preOrder(node.left, preKeys)
@@ -212,7 +213,7 @@ func (bst *BinarySearchTree) InOrder() []string {
 	return inKeys
 }
 
-func inOrder(node *node, inKeys *[]string) {
+func inOrder(node *Node, inKeys *[]string) {
 	if node != nil {
 		inOrder(node.left, inKeys)
 		*inKeys = append(*inKeys, node.key)
@@ -220,14 +221,33 @@ func inOrder(node *node, inKeys *[]string) {
 	}
 }
 
+func (node *Node) Traverse() {
+	node.TraverseFunc(func(node *Node) {
+		fmt.Printf("key is %s , value is %s", node.key, node.value)
+		fmt.Println()
+	})
+}
+
 // 使用Node非BinarySearchTree
-func (node *node) TraverseFunc(f func(*node)) {
-	if node == nil{
+func (node *Node) TraverseFunc(f func(*Node)) {
+	if node == nil {
 		return
 	}
 	node.left.TraverseFunc(f)
 	f(node)
 	node.right.TraverseFunc(f)
+}
+
+// 使用channel遍历
+func (node *Node) TraverseWithChannel() chan *Node {
+	ret := make(chan *Node)
+	go func() {
+		node.TraverseFunc(func(n *Node) {
+			ret <- n
+		})
+		close(ret)
+	}()
+	return ret
 }
 
 // 后序遍历：先递归访问左右子树，再访问自身节点。（释放节点）
@@ -237,7 +257,7 @@ func (bst *BinarySearchTree) PostOrder() []string {
 	return postKeys
 }
 
-func postOrder(node *node, postKeys *[]string) {
+func postOrder(node *Node, postKeys *[]string) {
 	if node != nil {
 		postOrder(node.left, postKeys)
 		postOrder(node.right, postKeys)
@@ -253,7 +273,7 @@ func (bst *BinarySearchTree) LevelOrder() []string {
 	levelKeys := make([]string, 0)
 	for q.Len() > 0 {
 		nd := q.Front()
-		if n, ok := nd.Value.(*node); ok { //出队
+		if n, ok := nd.Value.(*Node); ok { //出队
 			levelKeys = append(levelKeys, n.key)
 			q.Remove(nd)
 			if n.left != nil {
