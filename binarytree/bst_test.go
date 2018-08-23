@@ -49,13 +49,22 @@ func TestBSTInset(t *testing.T) {
 	bst1.Remove("45")
 	fmt.Println("bst1中序遍历：", bst1.InOrder())
 
-	bst1.root.TraverseFunc(func(n *node) {
-		fmt.Println(n.key)
-	})
+	fmt.Println("test Traverse()")
+	bst1.root.Traverse()
 
-	count :=0
-	bst1.root.TraverseFunc(func(n *node) {
+	count := 0
+	bst1.root.TraverseFunc(func(n *Node) {
 		count++
 	})
-	fmt.Printf("num of nodes is : %d",count)
+	fmt.Printf("num of nodes is : %d", count)
+	fmt.Println()
+
+	c := bst1.root.TraverseWithChannel()
+	maxNode := "0"
+	for node := range c {
+		if node.key > maxNode {
+			maxNode = node.key
+		}
+	}
+	fmt.Printf("maxNode value is: %s", maxNode)
 }
