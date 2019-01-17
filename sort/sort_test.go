@@ -56,3 +56,25 @@ func TestInversePairs(t *testing.T) {
 	InsertionSort(arr)
 	fmt.Println("排序后逆序对:", InversePairs(arr))
 }
+
+// go test -v sort.go sort_test.go sorthelper.go -test.run TestOddEvenSort
+func TestOddEvenSort(t *testing.T) {
+	fmt.Println("=======奇偶排序=======")
+	arr := GenerateRandomArray(10, 1, 10)
+	fmt.Println("ori:", arr)
+	fmt.Println("new:", OddEvenSort(arr))
+}
+
+//func TestOddEvenSort2(t *testing.T) {
+//	fmt.Println("=======并行奇偶排序=======")
+//	arr := GenerateRandomArray(10, 1, 10)
+//	fmt.Println("ori:", arr)
+//	fmt.Println("new:", OddEvenSort2(arr))
+//}
+
+func TestCocktailSort(t *testing.T) {
+	fmt.Println("=======鸡尾酒排序=======")
+	arr := GenerateRandomArray(10, 1, 10)
+	fmt.Println("ori:", arr)
+	fmt.Println("new:", CocktailSort(arr))
+}

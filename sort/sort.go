@@ -34,6 +34,96 @@ func BubbleSort(arr []int) []int {
 	return arr
 }
 
+// 鸡尾酒排序：冒泡排序完再返回到头
+// O(n^2)
+func CocktailSort(arr []int) []int {
+	swap := true // 是否发生数据交换
+	for swap {
+		swap = false
+		for i := 0; i < len(arr)/2; i++ {
+			// 将最大值排到队尾
+			for j := i; j < len(arr)-i-1; j++ {
+				if arr[j] > arr[j+1] {
+					arr[j], arr[j+1] = arr[j+1], arr[j]
+					swap = true
+				}
+			}
+			// 将最小值排到队头
+			for j := len(arr) - 1 - i - 1; j > i; j-- {
+				if arr[j] < arr[j-1] {
+					arr[j], arr[j-1] = arr[j-1], arr[j]
+					swap = true
+				}
+			}
+		}
+	}
+	return arr
+}
+
+// 奇偶排序：1、奇偶；2、偶奇...成对出现
+// O(n^2)    多核：O(n^2/(m/2)) (m：待排个数)
+func OddEvenSort(arr []int) []int {
+	swap, oddOrEven := true, 0 // swap:是否发生交换；oddOrEven：0偶交换，1奇数交换
+	for swap == true || oddOrEven == 1 {
+		swap = false
+		for i := oddOrEven; i < len(arr)-1; i += 2 {
+			if arr[i] > arr[i+1] {
+				arr[i], arr[i+1] = arr[i+1], arr[i]
+				swap = true
+			}
+		}
+		if oddOrEven == 0 {
+			oddOrEven = 1
+		} else {
+			oddOrEven = 0
+		}
+	}
+	return arr
+}
+
+//// 并行奇偶排序
+//func OddEvenSort2(arr []int) []int {
+//	mu := sync.Mutex{}
+//	swap, oddOrEven := true, 0
+//	setSwap := func(b bool) {
+//		mu.Lock()
+//		swap = b
+//		mu.Unlock()
+//	}
+//	getSwap := func() bool {
+//		mu.Lock()
+//		defer mu.Unlock()
+//		return swap
+//	}
+//	for getSwap() == true || oddOrEven == 1 {
+//		setSwap(false)
+//		wg := &sync.WaitGroup{}
+//		count := 0 // array.length/2 -(array.length%2 == 0?start:0)
+//		if len(arr)%2 == 0 {
+//			count = len(arr)/2 - oddOrEven
+//		} else {
+//			count = len(arr)/2 - 0
+//		}
+//		wg.Add(count)
+//		for i := oddOrEven; i < len(arr)-1; i += 2 {
+//			go func(i int, wg sync.WaitGroup) {
+//				defer wg.Done()
+//				if arr[i] > arr[i+1] {
+//					arr[i], arr[i+1] = arr[i+1], arr[i]
+//					setSwap(true)
+//				}
+//			}(i, *wg)
+//		}
+//		wg.Wait()
+//		if oddOrEven == 0 {
+//			oddOrEven = 1
+//		} else {
+//			oddOrEven = 0
+//		}
+//	}
+//	return arr
+//}
+
 // 插入排序：依次选择待排序列，放入到 有序（已排序）列的合适位置(依次和前一个比较，交换)
 // 待排序列有序效率极高 O(n)
 func InsertionSort(arr []int) []int {
@@ -70,7 +160,7 @@ func ShellSort(arr []int) []int {
 	n := len(arr)
 	// 计算 increment sequence: 1, 4, 13, 40, 121, 364, 1093...
 	// Knuth 增量序列:递推公式 h1=1, h(i) = 3 ∗ h(i−1) + 1
-	h := 1        // 增量
+	h := 1 // 增量
 	for h < n/3 { //寻找合适的间隔h
 		h = 3*h + 1
 	}
