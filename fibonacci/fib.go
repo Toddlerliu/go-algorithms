@@ -55,11 +55,13 @@ func fibonacci3() fibGen {
 	}
 }
 
+// 自顶向下
+// 时间空间：o(n)
 func fibonacci4(n int) int {
 	if n <= 2 {
 		return 1
 	}
-	s := make([]int, n)
+	s := make([]int, n+1)
 	s[1], s[2] = 1, 1
 	return _fibonacci4(n, s)
 }
@@ -69,6 +71,34 @@ func _fibonacci4(n int, s []int) int {
 		s[n] = _fibonacci4(n-1, s) + _fibonacci4(n-2, s)
 	}
 	return s[n]
+}
+
+// 自底向上
+// 时间空间：o(n)
+func fibonacci5(n int) int {
+	if n <= 2 {
+		return 1
+	}
+	s := make([]int, n+1)
+	s[1], s[2] = 1, 1
+	for i := 3; i <= n; i++ {
+		s[i] = s[i-1] + s[i-2]
+	}
+	return s[n]
+}
+
+// 滚动数组
+func fibonacci6(n int) int {
+	if n <= 2 {
+		return 1
+	}
+	s := make([]int, 2)
+	s[0], s[1] = 1, 1
+	for i := 0; 3 <= n; i++ {
+		//s[0], s[1] = s[1], s[0]+s[1]
+		s[i%2] = s[(i-1)%2] + s[(i-2)%2]
+	}
+	return s[1]
 }
 
 type fibGen func() int
