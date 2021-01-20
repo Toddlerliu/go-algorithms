@@ -1,10 +1,10 @@
 package fibonacci
 
 import (
-	"fmt"
-	"strings"
-	"io"
 	"bufio"
+	"fmt"
+	"io"
+	"strings"
 )
 
 func dup3(in <-chan int) (<-chan int, <-chan int, <-chan int) {
@@ -53,6 +53,22 @@ func fibonacci3() fibGen {
 		x1, x2 = x2, (x1 + x2)
 		return x1
 	}
+}
+
+func fibonacci4(n int) int {
+	if n <= 2 {
+		return 1
+	}
+	s := make([]int, n)
+	s[1], s[2] = 1, 1
+	return _fibonacci4(n, s)
+}
+
+func _fibonacci4(n int, s []int) int {
+	if s[n] == 0 {
+		s[n] = _fibonacci4(n-1, s) + _fibonacci4(n-2, s)
+	}
+	return s[n]
 }
 
 type fibGen func() int
