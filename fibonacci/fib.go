@@ -101,6 +101,18 @@ func fibonacci6(n int) int {
 	return s[1]
 }
 
+// 尾递归
+func fibonacci7(n int) int {
+	return _fibonacci7(n, 1, 1)
+}
+
+func _fibonacci7(n, first, second int) int {
+	if n <= 1 {
+		return first
+	}
+	return _fibonacci7(n-1, second, first+second)
+}
+
 type fibGen func() int
 
 // 函数实现接口
